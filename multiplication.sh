@@ -108,20 +108,11 @@ do
 done
 #echo yin_b=${yin_b[@]}
 #echo xiaoshuwei=$xiaoshuwei
-#如果因数是0
-for i in ${yin_b[@]}
-do
-	if [[ $i -eq 0 ]]
-	then
-		deshu=0
-		echo $deshu
-		exit
-	fi
-done
+
 #去掉前面的0
 for i in ${yin_b[@]}
 do
-	if [[ ${i:0:1} -eq 0 ]]
+	if [[ ${i:0:1} -eq 0 && ${#i} -ne 1 ]]
 	then
 		while [[ ${i:0:1} -eq 0 ]]
 		do
@@ -130,6 +121,16 @@ do
 		yin_c=(${yin_c[@]} $i)
 	else
 		yin_c=(${yin_c[@]} $i)
+	fi
+done
+#如果因数是0，结果为0
+for i in ${yin_c[@]}
+do
+	if [[ $i -eq 0 ]]
+	then
+		deshu=0
+		echo $deshu
+		exit
 	fi
 done
 #echo yin_c=${yin_c[@]}
