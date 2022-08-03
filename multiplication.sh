@@ -7,12 +7,32 @@ then
 	echo  "  Usage : $0 [FACTOR 0] [FACTOR 1] [FACTOR 2] ..."
 	exit
 fi
-yin=($*)
+yin_proto=($*)
+yin=(${yin_proto[@]})
+for ((i=0;i<${#yin[@]};i++))
+do
+	for j in ${yin[$i]}
+	do
+		if [[ ${j:0:1} == '-' ]]
+		then
+			yin[$i]=${j#-}
+			minus_n=$(expr $minus_n + 1)
+		fi
+	done
+done
+#echo ${yin[@]}
+if [[ $(expr ${minus_n:-0} % 2) -ne 0 ]]
+then
+	minus=1
+else
+	minus=0
+fi
 for ((i=0;i<${#yin[@]};i++))
 do
 #	echo $i
 	for j in ${yin[$i]}
 	do
+		unset check_1
 #		echo $j
 #		echo ${#j}
 		for ((k=0;k<${#j};k++))
@@ -30,13 +50,22 @@ do
 				then
 					check=1
 				fi
+				if [[ $l == '.' && $l == $m ]]
+				then
+					check_1=$(expr $check_1 + 1)
+				fi
 			done
 			if [[ $check == 0 ]]
 			then
-				echo \"$j\" is no a figure.
+				echo \"${yin_proto[$i]}\" is no a figure.
 				exit $(expr $i + 1)
 			fi
 		done
+		if [[ $check_1 -gt 1 ]]
+		then
+			echo "There are more then one '.' in '${yin_proto[$i]}'"
+			exit $(expr $i + 1)
+		fi
 	done
 done
 
@@ -118,5 +147,10 @@ else
 	deshu=$zhengshu
 	fi
 fi
+if [[ $minus -eq 1 ]]
+then
+	deshu='-'$deshu
+fi
+
 echo $deshu
 exit
