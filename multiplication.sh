@@ -4,16 +4,33 @@
 if [[ $1 == '--help' || $1 == '-h' || ! $1 ]]
 then
 	head -n3 $0
-	echo  "  Usage : $0 [FACTOR 0] [FACTOR 1] [FACTOR 2] ..."
+	echo "
+Usage : $0 [OPTIONS] [FACTOR 0] [FACTOR 1] [FACTOR 2] ...
+	example: \`$0 1 0.2 -3\` as '1*0.2*(-3)'.
+options:
+  -	Using shell pipes as input sources.
+	example: \`echo 1 0.2| $0 - -3\` as '1 * 0.2 * (-3)'.
+  --help,-h	List this help.
+"
 	exit
 fi
+#处理管道
 yin_proto=($*)
+if [[ $1 == '-' ]]
+then
+	while read f
+	do
+		yin_proto[0]=
+		yin_proto=($f ${yin_proto[@]})
+	done
+fi
+#处理负数
 yin=(${yin_proto[@]})
 for ((i=0;i<${#yin[@]};i++))
 do
 	for j in ${yin[$i]}
 	do
-		if [[ ${j:0:1} == '-' ]]
+		if [[ ${j:0:1} == '-' && ${#j} -ne 1 ]]
 		then
 			yin[$i]=${j#-}
 			minus_n=$(expr $minus_n + 1)
@@ -27,6 +44,7 @@ then
 else
 	minus=0
 fi
+##检查参数格式是否数字
 for ((i=0;i<${#yin[@]};i++))
 do
 #	echo $i
@@ -141,6 +159,10 @@ else
 	zhengshu=${deshu_c:0:$(expr ${#deshu_c} - $xiaoshuwei)}
 	if [[ ! $zhengshu ]];then zhengshu=0;fi
 	xiaoshu=${deshu_c:0-$xiaoshuwei}
+	while [[ ${xiaoshu:0-1} -eq 0 && ${#xiaoshu} -ne 1 ]]
+	do
+		xiaoshu=${xiaoshu:0:$(expr ${#xiaoshu} - 1)}
+	done
 	deshu=$zhengshu.$xiaoshu
 	if [[ $xiaoshu -eq 0 ]]
 	then
