@@ -165,7 +165,13 @@ else
 		xiaoshu=${xiaoshu:0:$(expr ${#xiaoshu} - 1)}
 	done
 	deshu=$zhengshu.$xiaoshu
-	if [[ $xiaoshu -eq 0 ]]
+	xiaoshu_kz=$xiaoshu
+	while [[ ${xiaoshu_kz:0:1} -eq 0 && ${#xiaoshu_kz} -ne 1 ]]
+	do
+		xiaoshu_kz=${xiaoshu_kz:1}
+	done
+#	echo xiaoshu_kz=$xiaoshu_kz
+	if [[ $xiaoshu_kz -eq 0 ]]
 	then
 	deshu=$zhengshu
 	fi
