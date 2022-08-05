@@ -139,6 +139,12 @@ for i in ${yin_c[@]}
 do
 	deshu_c=${deshu_c:-1}
 	deshu_c=`expr $deshu_c \* $i`
+	error=$?
+	if [[ $error -ne 0 && $error -ne 1 ]]
+	then
+	echo 'expr error'
+	exit $error
+	fi
 done
 #echo d=$deshu_c
 if [[ ${#deshu_c} -lt $xiaoshuwei ]]
@@ -182,4 +188,4 @@ then
 fi
 
 echo $deshu
-exit
+exit 0
